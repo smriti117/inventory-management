@@ -4,8 +4,6 @@ This guide provides step-by-step instructions to set up the environment, initial
 
 ---
 # Clone the Repository
-1.0 Clone the Project
-# Clone the repository
 git clone https://github.com/smriti117/inventory-management.git
 
 # Navigate into the project directory
