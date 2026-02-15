@@ -91,9 +91,9 @@ alembic upgrade head
 ### 3.3 Cleanup & Seed Data
 
 # Seed SuperAdmin, Vendors, and Customer
-python3 scripts/seed.py
-```
 
+```
+python3 scripts/seed.py
 ---
 
 ## 4. Run the Application
