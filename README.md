@@ -4,7 +4,7 @@ This guide provides step-by-step instructions to clone the repository, set up th
 
 ---
 
-## 📦 1. Clone the Repository
+##  1. Clone the Repository
 
 ### 1.1 Clone the Project
 
