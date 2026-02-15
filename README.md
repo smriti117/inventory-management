@@ -48,9 +48,6 @@ alembic upgrade head
 ### 2.3 Cleanup & Seed Data
 Execute the cleanup script to reset sequences and then seed the test data:
 ```bash
-# Optional: Clear any existing data
-python3 scripts/cleanup.py
-
 # Seed SuperAdmin, Vendors, and Customer
 python3 scripts/seed.py
 ```
