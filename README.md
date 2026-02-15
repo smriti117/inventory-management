@@ -1,106 +1,266 @@
-# Comprehensive Setup & Testing Guide
+# Project Setup & Testing Guide
 
-This guide provides step-by-step instructions to set up the environment, initialize the database, and verify the application features across different user roles.
+This guide provides step-by-step instructions to clone the repository, set up the environment, initialize the database, and verify application features across different user roles.
 
 ---
-# Clone the Repository
-git clone https://github.com/smriti117/inventory-management.git
+
+## 📦 1. Clone the Repository
+
+### 1.1 Clone the Project
+
+```bash
+# Clone the repository
+git clone https://github.com/<your-org>/<your-repo>.git
 
 # Navigate into the project directory
-cd inventory-management
+cd <your-repo>
+```
 
-1.1 Checkout Correct Branch (If Required)
+> Replace `<your-org>` and `<your-repo>` with your actual GitHub organization and repository name.
+
+### 1.2 Checkout Correct Branch (If Required)
+
+```bash
 git branch          # See current branch
 git checkout dev    # Example: switch to dev branch
 git pull origin dev # Pull latest changes
-
-
-## Setup :  Environment Setup
-
-### 1.1 Virtual Environment
-Create and activate a Python virtual environment to isolate dependencies:
-```bash
-# Create venv
-python3 -m venv venv
-
-# Activate venv
-source venv/bin/activate
 ```
-
-### 1.2 Install Requirements
-Install all core and development dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-### 1.3 Environment Variables
-Ensure you have a `.env` file in the root directory. You can use the provided `.env.example` as a template:
-```bash
-cp .env.example .env
-```
-*Note: Update `DATABASE_URL` if your local PostgreSQL settings differ.*
 
 ---
 
-## Step 2: Database Initialization
+## 2. Environment Setup
 
-### 2.1 Start PostgreSQL
-We recommend using Docker Compose to start the database and pgAdmin:
+### 2.1 Create Virtual Environment
+
+```bash
+# Create virtual environment
+python3 -m venv venv
+
+# Activate (Linux / Mac)
+source venv/bin/activate
+
+# Activate (Windows)
+venv\Scripts\activate
+```
+
+---
+
+### 2.2 Install Dependencies
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+---
+
+### 2.3 Configure Environment Variables
+
+Ensure you have a `.env` file in the root directory.
+
+```bash
+cp .env.example .env
+```
+
+> Update `DATABASE_URL` if your local PostgreSQL configuration differs.
+
+---
+
+## 3. Database Initialization
+
+### 3.1 Start PostgreSQL (Docker)
+
 ```bash
 docker-compose up -d
 ```
 
-### 2.2 Run Migrations
-Use Alembic to create the database schema from scratch:
+Verify containers are running:
+
+```bash
+docker ps
+```
+
+---
+
+### 3.2 Run Migrations
+
 ```bash
 alembic upgrade head
 ```
 
-### 2.3 Cleanup & Seed Data
-Execute the cleanup script to reset sequences and then seed the test data:
+To fully reset the schema:
+
 ```bash
+alembic downgrade base
+alembic upgrade head
+```
+
+---
+
+### 3.3 Cleanup & Seed Data
+
+```bash
+# Optional: Clear existing data
+python3 scripts/cleanup.py
+
 # Seed SuperAdmin, Vendors, and Customer
 python3 scripts/seed.py
 ```
 
 ---
 
-## Step 3: Running the Application
-Start the FastAPI server:
+## 4. Run the Application
+
 ```bash
 uvicorn main:app --reload
 ```
-Open the API documentation at: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+Open Swagger documentation:
+
+```
+http://localhost:8000/docs
+```
 
 ---
 
-## Step 4: Role-Based API Testing
+# 5. Role-Based API Testing
 
-Use the `/backend/api/v1/auth/login` endpoint to get tokens for each role.
+Use the following endpoint to obtain authentication tokens:
 
-### 4.1 SuperAdmin Flow
-- **Credentials**: `superadmin@example.com` / `password`
-- **Goal**: Full visibility and system management.
-- **Verification**:
-    - Call `GET /backend/api/v1/auth/me/details`. Verify you see `all_products` and `all_mappings`.
-    - Create/Delete any user or category.
+```
+POST /backend/api/v1/auth/login
+```
 
-### 4.2 Vendor Flow (Strict Isolation)
-- **Credentials**: 
-    - **Vendor 1**: `first_vendor@example.com` / `password`
-    - **Vendor 2**: `second_vendor@example.com` / `password`
-- **Goal**: Manage independent catalogs.
-- **Verification**:
-    - **Ownership**: Login as Vendor 2. Try to update a product owned by Vendor 1 (ID 1). 
-        - *Expected*: `403 Forbidden` - "You can only edit products you created".
-    - **Dashboard**: Call `GET /backend/api/v1/auth/me/details`. Verify you only see `my_products` (the ones you created).
+---
 
-### 4.3 Customer Flow (Read-Only)
-- **Credentials**: `customer@example.com` / `password`
-- **Goal**: Browse availability.
-- **Verification**:
-    - **Read Permission**: Can call `GET /backend/api/v1/product/` and `GET /backend/api/v1/inventory/`.
-    - **Write Restriction**: Try to create a product or update stock. 
-        - *Expected*: `403 Forbidden` or `Unauthorized` based on RBAC.
+## 5.1 SuperAdmin Flow
+
+**Credentials:**
+
+```
+superadmin@example.com
+password
+```
+
+### Expected Capabilities
+
+* Full visibility of system data
+* Full CRUD access across modules
+* Manage users, products, and categories
+
+### Verification
+
+Call:
+
+```
+GET /backend/api/v1/auth/me/details
+```
+
+Verify response includes:
+
+* `all_products`
+* `all_mappings`
+
+---
+
+## 5.2 Vendor Flow (Strict Isolation)
+
+**Credentials:**
+
+```
+Vendor 1: first_vendor@example.com / password
+Vendor 2: second_vendor@example.com / password
+```
+
+### Goal
+
+Each vendor manages only their own catalog.
+
+### Verification
+
+#### Ownership Restriction
+
+1. Login as Vendor 2
+2. Attempt to update Product ID 1 (created by Vendor 1)
+
+**Expected Response:**
+
+```
+403 Forbidden
+"You can only edit products you created"
+```
+
+#### Dashboard Scope
+
+Call:
+
+```
+GET /backend/api/v1/auth/me/details
+```
+
+Verify response contains only:
+
+* `my_products`
+
+---
+
+## 5.3 Customer Flow (Read-Only Access)
+
+**Credentials:**
+
+```
+customer@example.com
+password
+```
+
+### Allowed Actions
+
+```
+GET /backend/api/v1/product/
+GET /backend/api/v1/inventory/
+```
+
+### Restricted Actions
+
+Attempt:
+
+* Create product
+* Update stock
+
+**Expected Response:**
+
+```
+403 Forbidden
+```
+
+or
+
+```
+401 Unauthorized
+```
+
+(depending on RBAC implementation)
+
+---
+
+# Final Setup Checklist
+
+* [ ] Repository cloned
+* [ ] Correct branch checked out
+* [ ] Virtual environment created & activated
+* [ ] Dependencies installed
+* [ ] `.env` configured
+* [ ] Docker containers running
+* [ ] Migrations executed
+* [ ] Seed data loaded
+* [ ] Application running
+
+---
+
+#  Notes
+
+* Ensure Docker is installed before running `docker-compose`.
+* Always activate the virtual environment before running project commands.
+* If ports are already in use, update configuration accordingly.
 
 ---
