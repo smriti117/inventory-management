@@ -3,8 +3,21 @@
 This guide provides step-by-step instructions to set up the environment, initialize the database, and verify the application features across different user roles.
 
 ---
+# Clone the Repository
+1.0 Clone the Project
+# Clone the repository
+git clone https://github.com/smriti117/inventory-management.git
 
-## Step 1: Environment Setup
+# Navigate into the project directory
+cd inventory-management
+
+1.1 Checkout Correct Branch (If Required)
+git branch          # See current branch
+git checkout dev    # Example: switch to dev branch
+git pull origin dev # Pull latest changes
+
+
+## Setup :  Environment Setup
 
 ### 1.1 Virtual Environment
 Create and activate a Python virtual environment to isolate dependencies:
