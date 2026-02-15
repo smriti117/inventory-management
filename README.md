@@ -86,20 +86,9 @@ docker ps
 alembic upgrade head
 ```
 
-To fully reset the schema:
-
-```bash
-alembic downgrade base
-alembic upgrade head
-```
-
 ---
 
 ### 3.3 Cleanup & Seed Data
-
-```bash
-# Optional: Clear existing data
-python3 scripts/cleanup.py
 
 # Seed SuperAdmin, Vendors, and Customer
 python3 scripts/seed.py
