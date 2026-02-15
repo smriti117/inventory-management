@@ -10,13 +10,11 @@ This guide provides step-by-step instructions to clone the repository, set up th
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-org>/<your-repo>.git
+git clone https://github.com/smriti117/inventory-management.git
 
 # Navigate into the project directory
-cd <your-repo>
+cd inventory-management
 ```
-
-> Replace `<your-org>` and `<your-repo>` with your actual GitHub organization and repository name.
 
 ### 1.2 Checkout Correct Branch (If Required)
 
