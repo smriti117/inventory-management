@@ -57,7 +57,7 @@ pip install -r requirements.txt
 Ensure you have a `.env` file in the root directory.
 
 ```bash
-cp .env.example .env
+cp .env.local .env
 ```
 
 > Update `DATABASE_URL` if your local PostgreSQL configuration differs.
