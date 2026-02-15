@@ -105,7 +105,7 @@ uvicorn main:app --reload
 Open Swagger documentation:
 
 ```
-http://localhost:8000/docs
+http://localhost:8000/backend/api/v1/docs
 ```
 
 ---
