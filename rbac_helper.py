@@ -1,6 +1,5 @@
 from functools import wraps
 from fastapi import status, HTTPException
-from helpers.response_parser import generate_response
 from enums.enum_helper import UserRole
 
 
@@ -8,12 +7,8 @@ def role_required(allowed_roles: list[UserRole]):
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
-            # Extract current_user from kwargs
-            current_user = None
-            for key, value in kwargs.items():
-                if hasattr(value, 'role'):
-                    current_user = value
-                    break
+            # Extract current_user from kwargs (FastAPI dependency injection)
+            current_user = kwargs.get('current_user')
             
             if not current_user:
                 raise HTTPException(
