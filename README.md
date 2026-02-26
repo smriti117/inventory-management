@@ -230,6 +230,21 @@ or
 
 ---
 
+# Unit Tests
+
+To run all Tests: 
+python3 -m pytest tests/
+
+
+Run Tests for a Specific File:
+python3 -m pytest tests/test_auth.py
+python3 -m pytest tests/test_category.py
+python3 -m pytest tests/test_inventory.py
+python3 -m pytest tests/test_products.py
+python3 -m pytest tests/test_vendors.py
+python3 -m pytest tests/test_purchase.py
+
+
 # Final Setup Checklist
 
 * [ ] Repository cloned
