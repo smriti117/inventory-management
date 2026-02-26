@@ -245,6 +245,7 @@ python3 -m pytest tests/test_vendors.py
 python3 -m pytest tests/test_purchase.py
 
 
+
 # Final Setup Checklist
 
 * [ ] Repository cloned
